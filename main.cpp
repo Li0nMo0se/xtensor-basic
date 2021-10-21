@@ -1,12 +1,12 @@
 #include <numeric>
-#include <xtensor.hpp>
 #include <pybind11/pybind11.h>
+#include <xtensor.hpp>
+
 #define FORCE_IMPORT_ARRAY
 #include <xtensor-python/pyarray.hpp>
-
 double sum_of_sines(xt::pyarray<double>& m)
 {
-    auto sines = xt::sin(m);  // sines does not actually hold values.
+    auto sines = xt::sin(m); // sines does not actually hold values.
     return std::accumulate(sines.begin(), sines.end(), 0.0);
 }
 

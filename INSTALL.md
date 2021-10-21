@@ -13,6 +13,7 @@ sudo apt install python3.8
 ```
 git clone git@github.com:xtensor-stack/xtl.git
 cd xtl/
+git checkout 0.7.0
 mkdir build
 cd build/
 cmake ..
@@ -27,8 +28,21 @@ deps:
 ```
 git clone git@github.com:xtensor-stack/xtensor.git
 cd xtensor/
+git checkout 0.24.0
 mkdir build
 cd build/
+cmake ..
+sudo make install -j
+```
+
+## Install xsimd
+
+```
+git clone git@github.com:xtensor-stack/xsimd.git
+cd xsimd/
+git checkout 8.0.3
+mkdir build
+cd build
 cmake ..
 sudo make install -j
 ```
