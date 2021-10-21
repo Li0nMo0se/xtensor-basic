@@ -68,3 +68,21 @@ cd build/
 cmake ..
 sudo make install -j
 ```
+
+## Install tbb
+
+**Note:** I did not find a proper way to install tbb with cmake support
+
+Download tbb from [tbb release](https://github.com/oneapi-src/oneTBB/releases) and pick the linux release. The most recent is `oneapi-tbb-2021.4.0-lin.tgz` (when the file was written)
+
+Where the archive was downloaded, do the following:
+```
+tar -xvf oneapi-tbb-2021.4.0-lin.tgz
+sudo mv env/ /usr/local/
+sudo mv include/* /usr/local/include/
+sudo mv lib/* /usr/local/lib/
+sudo mv lib/cmake/* /usr/local/lib/cmake/
+sudo mv lib/pkgconfig/* /usr/local/lib/pkgconfig/
+echo "source /usr/local/env/vars.sh" >> ~/.bashrc
+sudo mv /usr/local/lib/cmake/tbb/TBBConfig.cmake /usr/local/lib/cmake/tbb/tbbConfig.cmake
+```

@@ -5,6 +5,15 @@ The goal is to produce a C++ library importable from python. This library must h
 
 That speed has been obtained thanks to the [xsmid](https://github.com/xtensor-stack/xsimd) wrapper and optmization compilation flags such as `-O3 -mavx2 -ffast-math`.
 
+## Program
+
+### Xtensor vs Numpy simd operations
+
+Compare the speed of simd operation with numpy and xtensor
+
+### double loops execution comparison (with sum axis=2)
+
+Compare the speed of execution double loop with numpy (parallel or not) and xtensor (parallel or not)
 
 ## Installation of the dependecies on the system
 
