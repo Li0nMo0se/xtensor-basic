@@ -182,6 +182,8 @@ For small ksize, it is better to use xtensor with tbb on that example. For great
 **I believe the best is to use as many smid instructions as possible and use some threads performing those big smid instructions.**
 
 ![](benchmark/benchmark(2000,%203000,%20100)_cut_plot.png)
+
+Finally, from ksize=100 and ksize=1000 the speed for each approach is the same but Numba. **Therefore, a ksize greater than 100 do not improve the speed**.
 #### Questions:
 
 **What is our target ksize?**
