@@ -169,16 +169,23 @@ Let's zoom in for ksize=[10, 100, 1000]
 * C++ (without tbb): The speed is constant and slower than regular python loop. This is **the disapointing part**. I was expecting more speed than regular python loop as both uses smid instruction but c++ is moreover compiled.
 * C++ (with tbb): for small ksize, this is the fastest options. However, from ksize=100, even with tbb threads, it is slower than regular python loops and numpy smid instruction?
 
+Let's see more ksizes $\in [10-100]$
+
+![](benchmark/benchmark(2000,%203000,%20100)_bar_manyksizes.png)
+
 **Recap:**
 
 Best for ksize:
 * 1 -> xtensor with tbb
 * 10 -> xtensor with tbb
+* 25 -> python
+* 32 -> python
+* 64 -> python joblib
 * 100 -> python joblib
 * 1000 -> python joblib
 
-In any case, parallelization is faster.
-For small ksize, it is better to use xtensor with tbb on that example. For greater ksize, joblib gives the best speed.
+For small ksize, it is better to use xtensor with tbb on that example. For greater ksize, joblib gives the best speed. In between, regular python is the fastest.
+
 **I believe the best is to use as many smid instructions as possible and use some threads performing those big smid instructions.**
 
 ![](benchmark/benchmark(2000,%203000,%20100)_cut_plot.png)
