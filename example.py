@@ -4,6 +4,7 @@ import timeit
 import itertools
 import joblib
 import numba
+import pandas as pd
 
 # Part one (xtensor-python)
 # Use xsmid to be as fast as numpy
@@ -83,11 +84,11 @@ def cpp_tbb_sum(arr, ksize=10):
 def cpp_sum(arr, ksize=10):
     return mymodule.sum(arr, ksize)
 
-b = np.random.randint(-1000, 1000, size=(1300, 2000, 100))
+b = np.random.randint(-1000, 1000, size=(2000, 3000, 100))
 
 ref = np.sum(b, axis=2)
 
-ksize = 10
+ksize = 100
 python_res = python_sum(b, ksize=ksize)
 python_parallel_res = python_parallel_sum(b, ksize=ksize)
 numba_res = numba_sum(b, ksize=ksize)
@@ -108,24 +109,45 @@ nb_it = 2
 print(f"Number of iteration: {nb_it}")
 print(f"Input shape: {b.shape}")
 
-for ksize in (1, 10, 100):
+ksizes = [1, 10, 100, 1000]
+times = []
+
+for ksize in ksizes:
+    time = []
     print(f"\nksize {ksize}")
     t = timeit.Timer(lambda: np.sum(b, axis=2))
-    print(f"Numpy version (no loop, not relevant): {t.timeit(nb_it)}")
+    time.append(t.timeit(nb_it))
+    print(f"Numpy version (no loop, not relevant): {time[-1]}")
 
     t = timeit.Timer(lambda: python_sum(b, ksize=ksize))
-    print(f"Python (without joblib) version:       {t.timeit(nb_it)}")
+    time.append(t.timeit(nb_it))
+    print(f"Python (without joblib) version:       {time[-1]}")
     t = timeit.Timer(lambda: python_parallel_sum(b, ksize=ksize))
-    print(f"Python (with joblib) version:          {t.timeit(nb_it)}")
+    time.append(t.timeit(nb_it))
+    print(f"Python (with joblib) version:          {time[-1]}")
 
 
     t = timeit.Timer(lambda: numba_sum(b, ksize=ksize))
-    print(f"Numba version:                         {t.timeit(nb_it)}")
+    time.append(t.timeit(nb_it))
+    print(f"Numba version:                         {time[-1]}")
 
     t = timeit.Timer(lambda: cpp_tbb_sum(b, ksize=ksize))
-    print(f"C++ (with tbb) version:                {t.timeit(nb_it)}")
+    time.append(t.timeit(nb_it))
+    print(f"C++ (with tbb) version:                {time[-1]}")
     t = timeit.Timer(lambda: cpp_sum(b, ksize=ksize))
-    print(f"C++ (without tbb) version:             {t.timeit(nb_it)}")
+    time.append(t.timeit(nb_it))
+    print(f"C++ (without tbb) version:             {time[-1]}")
+
+    times.append(time)
 
 
-
+columns = ["Numpy version (no loop, not relevant)",
+           "Python (without joblib) version",
+           "Python (with joblib) version",
+           "Numba version",
+           "C++ (with tbb) version",
+           "C++ (without tbb) version"]
+df = pd.DataFrame(times, index=ksizes, columns=columns)
+filename = f"benchmark{b.shape}.csv"
+df.to_csv(filename)
+print(f"Benchmark saved {filename}")
