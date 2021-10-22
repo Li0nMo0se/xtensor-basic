@@ -33,8 +33,6 @@ def local_sum(y, x, res, arr, ksize):
 
 
 def python_sum(arr, ksize=10):
-    assert arr.shape[0] % ksize == 0
-    assert arr.shape[1] % ksize == 0
     assert arr.ndim == 3
 
     res = np.empty(shape=arr.shape[:2])
@@ -45,8 +43,6 @@ def python_sum(arr, ksize=10):
     return res
 
 def python_parallel_sum(arr, ksize=10):
-    assert arr.shape[0] % ksize == 0
-    assert arr.shape[1] % ksize == 0
     assert arr.ndim == 3
 
     res = np.empty(shape=arr.shape[:2])
@@ -64,8 +60,6 @@ def python_parallel_sum(arr, ksize=10):
 # -- Numba
 @numba.jit(nopython=True)
 def numba_sum(arr, ksize=10):
-    assert arr.shape[0] % ksize == 0
-    assert arr.shape[1] % ksize == 0
     assert arr.ndim == 3
 
     res = np.empty(shape=arr.shape[:2])
@@ -88,7 +82,7 @@ b = np.random.randint(-1000, 1000, size=(2000, 3000, 100))
 
 ref = np.sum(b, axis=2)
 
-ksize = 100
+ksize = 32
 python_res = python_sum(b, ksize=ksize)
 python_parallel_res = python_parallel_sum(b, ksize=ksize)
 numba_res = numba_sum(b, ksize=ksize)
@@ -109,7 +103,7 @@ nb_it = 2
 print(f"Number of iteration: {nb_it}")
 print(f"Input shape: {b.shape}")
 
-ksizes = [1, 10, 100, 1000]
+ksizes = [10, 25, 32, 64, 100]
 times = []
 
 for ksize in ksizes:

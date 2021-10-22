@@ -15,8 +15,6 @@ double sum_of_sines(xt::pyarray<double>& m)
 xt::pyarray<int> tbb_sum(xt::pyarray<int>& m, unsigned int ksize)
 {
     assert(m.dimension() == 3);
-    assert(m.shape(0) % ksize == 0);
-    assert(m.shape(1) % ksize == 0);
 
     xt::xarray<int>::shape_type shape = {m.shape(0), m.shape(1)};
     xt::xarray<int> res(shape);
@@ -47,17 +45,15 @@ xt::pyarray<int> tbb_sum(xt::pyarray<int>& m, unsigned int ksize)
 xt::pyarray<int> sum(xt::pyarray<int>& m, unsigned int ksize)
 {
     assert(m.dimension() == 3);
-    assert(m.shape(0) % ksize == 0);
-    assert(m.shape(1) % ksize == 0);
     xt::xarray<int>::shape_type shape = {m.shape(0), m.shape(1)};
     xt::xarray<int> res(shape);
 
     // auto range_y = xt::range(0, m.shape(0), ksize);
     // auto range_x = xt::range(0, m.shape(1), ksize);
 
-    for (size_t y = 0; y != m.shape(0); y += ksize)
+    for (size_t y = 0; y < m.shape(0); y += ksize)
     {
-        for (size_t x = 0; x != m.shape(1); x += ksize)
+        for (size_t x = 0; x < m.shape(1); x += ksize)
         {
             auto m_view = xt::view(m,
                                    xt::range(y, y + ksize),
