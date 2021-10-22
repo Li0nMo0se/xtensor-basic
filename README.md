@@ -3,7 +3,10 @@
 You can find a basic usage of xtensor, xtensor-python and xsmid.
 The goal is to produce a C++ library importable from python. This library must have at least the same speed as numpy for the vectorized operation.
 
-That speed has been obtained thanks to the [xsmid](https://github.com/xtensor-stack/xsimd) wrapper and optmization compilation flags such as `-O3 -march=native -ffast-math`.
+The xtensor speed has been obtained thanks to:
+* the [xsmid](https://github.com/xtensor-stack/xsimd) wrapper
+* Optmization compilation flags such as `-O3 -mavx2 -ffast-math`.
+* the [tbb](https://github.com/oneapi-src/oneTBB) parallelization library
 
 ## Program
 
