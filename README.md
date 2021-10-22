@@ -36,11 +36,13 @@ Numpy version: 0.02018828600012057
 C++ version:   0.019397275000301306
 ```
 
-The two operation took about the same processing time. Xtensor clearly use smid instructions to perform as fast as numpy
+The two operation took about the same processing time. Xtensor clearly uses smid instructions to perform as fast as numpy
 
-### double loops execution comparison (with sum axis=2)
+### Double loops execution comparison (with sum axis=2)
 
 Compare the speed of execution double loop with numpy (parallel or not) and xtensor (parallel or not). The goal is to simulate python loop.
+
+Note: The example simulates the behavior of np.sum(axis=2). There are loops for the sake of the benchmarks.
 
 #### Basic Python code (tagged as Python without joblib)
 
@@ -60,7 +62,7 @@ def python_sum(arr, ksize=10):
 
 #### Python (with joblib)
 
-```
+```Python
 def python_parallel_sum(arr, ksize=10):
     assert arr.shape[0] % ksize == 0
     assert arr.shape[1] % ksize == 0
@@ -149,13 +151,47 @@ xt::pyarray<int> tbb_sum(xt::pyarray<int>& m, unsigned int ksize)
 }
 ```
 
-In the tbb approach, the goal is to use extensively **threads** and xtensor **smid** instruction within every threads.
+In the tbb approach, the goal is to use extensively **threads** and xtensor **smid** instructiosn within every threads.
 
-## Installation of the dependecies on the system
+#### Benchmarks
+
+![](benchmark/benchmark(2000,%203000,%20100)_bar.png)
+
+For ksize=1, it can be seen that the Python joblib threading approach is much slower. This is because of the overhead using threads. On the other hand, the xtensor with tbb is the fastest.
+
+Let's zoom in for ksize=[10, 100, 1000]
+
+![](benchmark/benchmark(2000,%203000,%20100)_cut_bar.png)
+
+* Python (without joblib): get faster with greater ksize. This can be explained because greater the ksize is, less iterations we do. **More simd instructions and less iterations give speed**.
+* Python (with joblib): for ksize=10, it is still the slowest. But from ksize=100 it becomes the fastest. That means more smid instructions and less iterations combined with a reasonable amount of threads is **the fastest**.
+* Numba: get slower for greater ksize. What would be the reason? It should be at least as fast as regular python loop.
+* C++ (without tbb): The speed is constant and slower than regular python loop. This is **the disapointing part**. I was expecting more speed than regular python loop as both uses smid instruction but c++ is moreover compiled.
+* C++ (with tbb): for small ksize, this is the fastest options. However, from ksize=100, even with tbb threads, it is slower than regular python loops and numpy smid instruction?
+
+**Recap:**
+
+Best for ksize:
+* 1 -> xtensor with tbb
+* 10 -> xtensor with tbb
+* 100 -> python joblib
+* 1000 -> python joblib
+
+In any case, parallelization is faster.
+For small ksize, it is better to use xtensor with tbb on that example. For greater ksize, joblib gives the best speed.
+**I believe the best is to use as many smid instructions as possible and use some threads performing those big smid instructions.**
+
+![](benchmark/benchmark(2000,%203000,%20100)_cut_plot.png)
+#### Questions:
+
+**What is our target ksize?**
+## Build library
+
+### Installation of the dependecies on the system
 
 * See [install](INSTALL.md)
 
-## Build library
+### Cmake build
 
 In the root directory of the project:
 
