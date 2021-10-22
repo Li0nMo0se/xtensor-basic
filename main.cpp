@@ -20,7 +20,11 @@ xt::pyarray<int> tbb_sum(xt::pyarray<int>& m, unsigned int ksize)
     xt::xarray<int> res(shape);
 
     tbb::parallel_for(
-        tbb::blocked_range2d<int>(0, m.shape(0) / ksize, 0, m.shape(1) / ksize),
+        tbb::blocked_range2d<int>(
+            0,
+            m.shape(0) / ksize + (m.shape(0) % ksize != 0),
+            0,
+            m.shape(1) / ksize + (m.shape(1) % ksize != 0)),
         [&res, &m, ksize](const tbb::blocked_range2d<int>& r) {
             for (int y = std::begin(r.rows()); y != std::end(r.rows()); y++)
             {
