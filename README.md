@@ -216,19 +216,16 @@ Note: remember to build in `Release` mode if you want the library to be as fast 
 
 ## Test & benchmark
 
-In the root directory of the project:
+In the build directory you will find a `run.sh` script that will run the compilation and then the benchmark scripts `example.py` in a python venv
 
-### Setup python venv
 
+### Execute the benchmark only
+
+Alternatively, to execute the benchmark, you may do the following in the root directory:
 ```
 python3 -m venv .venv
 source .venv/bin/activate
 pip3 install -r requirements.txt
-```
-
-### Execute the benchmark
-
-```
 python3 example.py
 ```
 
