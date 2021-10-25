@@ -11,13 +11,18 @@ double sum_of_sines(xt::pyarray<double>& m)
     return xt::sum(xt::sin(m), {0})(0);
 }
 
+xt::pyarray<int64_t> ref_sum(xt::pyarray<int64_t>& m)
+{
+    assert(m.dimension() == 3);
+    return xt::sum<int64_t>(m, {2}, xt::evaluation_strategy::immediate);
+}
 // Not that useful but test tbb efficiency
-xt::pyarray<int> tbb_sum(xt::pyarray<int>& m, unsigned int ksize)
+xt::pyarray<int64_t> tbb_sum(xt::pyarray<int64_t>& m, unsigned int ksize)
 {
     assert(m.dimension() == 3);
 
-    xt::xarray<int>::shape_type shape = {m.shape(0), m.shape(1)};
-    xt::xarray<int> res(shape);
+    xt::xarray<int64_t>::shape_type shape = {m.shape(0), m.shape(1)};
+    xt::xarray<int64_t> res(shape);
 
     tbb::parallel_for(
         tbb::blocked_range2d<int>(
@@ -46,11 +51,11 @@ xt::pyarray<int> tbb_sum(xt::pyarray<int>& m, unsigned int ksize)
     return res;
 }
 
-xt::pyarray<int> sum(xt::pyarray<int>& m, unsigned int ksize)
+xt::pyarray<int64_t> sum(xt::pyarray<int64_t>& m, unsigned int ksize)
 {
     assert(m.dimension() == 3);
-    xt::xarray<int>::shape_type shape = {m.shape(0), m.shape(1)};
-    xt::xarray<int> res(shape);
+    xt::xarray<int64_t>::shape_type shape = {m.shape(0), m.shape(1)};
+    xt::xarray<int64_t> res(shape);
 
     // auto range_y = xt::range(0, m.shape(0), ksize);
     // auto range_x = xt::range(0, m.shape(1), ksize);
@@ -78,6 +83,7 @@ PYBIND11_MODULE(mymodule, m)
     m.def("sum_of_sines",
           sum_of_sines,
           "Sum the sines of the input values using smid operations");
+    m.def("ref_sum", ref_sum, "Reference Sum (axis=2)");
     m.def("sum", sum, "Sum (axis=2) processed without tbb");
     m.def("tbb_sum", tbb_sum, "Sum (axis=2) processed with tbb");
 }
