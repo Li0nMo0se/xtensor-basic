@@ -13,7 +13,8 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -ffast-math -mavx2")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -Wextra")
 
 pybind11_add_module(mymodule main.cpp)
-set_property(TARGET mymodule PROPERTY CXX_STANDARD 20)
+# /!\ Crash with C++20 and xt::evaluation_strategy::immediate
+set_property(TARGET mymodule PROPERTY CXX_STANDARD 17)
 # /!\ Notice that xtensor::use_simd option prevents building on a machine and distributing
 # the resulting binary on another machine with a different architecture
 target_link_libraries(mymodule PUBLIC pybind11::module xtensor xtensor::optimize xtensor-python xtensor::use_xsimd Python::NumPy tbb)
