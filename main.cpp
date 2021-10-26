@@ -16,7 +16,6 @@ xt::pyarray<int64_t> ref_sum(xt::pyarray<int64_t>& m)
     assert(m.dimension() == 3);
     return xt::sum<int64_t>(m, {2}, xt::evaluation_strategy::immediate);
 }
-// Not that useful but test tbb efficiency
 xt::pyarray<int64_t> tbb_sum(xt::pyarray<int64_t>& m, unsigned int ksize)
 {
     assert(m.dimension() == 3);
